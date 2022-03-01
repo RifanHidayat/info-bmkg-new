@@ -345,7 +345,7 @@ class _TutorialPageState extends State<TutorialPage> {
 
   void sendData(token) async {
     var magnitudo = widget.dataGempa[0][1].toString();
-    var distance = widget.dataGempa[0][5].toString();
+    var distance = widget.dataGempa[0][4].toString();
     var serverKey =
         'AAAA1jksY9g:APA91bH-w1gc0SLbJkhLbWkbnwTJl1ZM2RELlzNRvWQtzkIJAQrgWNsNdrRy9jz47ZRpsWX9J4XTVSk5SPqII2VcfmgHR7GsLL1MBisghnOYyWuGr7YNR9k4l2UkFD44RWJyU92quofN';
 
