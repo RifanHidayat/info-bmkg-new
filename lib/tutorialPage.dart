@@ -137,18 +137,63 @@ class _TutorialPageState extends State<TutorialPage> {
     // Also handle any interaction when the app is in the background via a
     // Stream listener
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      showNotification(message);
+      var info = 'gempa berkekuatan ' +
+          message.data['magnitude'] +
+          ' Magnitudo, pada ' +
+          message.data['date'] +
+          ' jam ' +
+          message.data['time'] +
+          ' di  ' +
+          message.data['region'] +
+          ', ' +
+          message.data['distance'] +
+          ' KM dari anda, ' +
+          message.data['potency'] +
+          '';
+
+      showNotification(
+          info, message.data['distance'], message.data['magnitude'], message);
     });
     FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
     FirebaseMessaging.onBackgroundMessage((message) {
       print("_messaging onBackgroundMessage: $message");
-      flutterTts.speak(message.notification.body);
+      var info = 'gempa berkekuatan ' +
+          message.data['magnitude'] +
+          ' Magnitudo, pada ' +
+          message.data['date'] +
+          ' jam ' +
+          message.data['time'] +
+          ' di  ' +
+          message.data['region'] +
+          ', ' +
+          message.data['distance'] +
+          ' KM dari anda, ' +
+          message.data['potency'] +
+          '';
+
+      showNotification(
+          info, message.data['distance'], message.data['magnitude'], message);
+
       return;
     });
   }
 
   void _handleMessage(RemoteMessage message) {
-    flutterTts.speak(message.notification.body);
+    var info = 'gempa berkekuatan ' +
+        message.data['magnitude'] +
+        ' Magnitudo, pada ' +
+        message.data['date'] +
+        ' jam ' +
+        message.data['time'] +
+        ' di  ' +
+        message.data['region'] +
+        ', ' +
+        message.data['distance'] +
+        ' KM dari anda, ' +
+        message.data['potency'] +
+        '';
+
+    flutterTts.speak(info);
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -180,18 +225,24 @@ class _TutorialPageState extends State<TutorialPage> {
     });
   }
 
-  Future showNotification(message) async {
-    flutterTts.speak(message.notification.body);
+  Future showNotification(info, distance, magnitude, message) async {
+    if ((double.parse(magnitude.toString()) > 3 &&
+        int.parse(distance.toString()) <= 150) ||
+        (double.parse(magnitude.toString()) > 5 &&
+            int.parse(distance.toString()) <= 250)) {
+      flutterTts.speak(info);
+
+    }
+
+    //flutterTts.speak(info);
+    // print("data notif ${message}");
     RemoteNotification notification = message.notification;
     AndroidNotification android = message.notification?.android;
 
-    if (notification != null && android != null) {
-      showNotification(notification);
-    }
     flutterLocalNotificationsPlugin.show(
         0,
         notification.title,
-        notification.body,
+        info,
         NotificationDetails(
           android: AndroidNotificationDetails("0", "gempa",
               playSound: true,
@@ -203,7 +254,7 @@ class _TutorialPageState extends State<TutorialPage> {
               //      one that already exists in example app.
               ),
         ),
-        payload: "${message.notification.body}");
+        payload: "${info}");
   }
 
   Future onSelectNotification(var payload) async {
@@ -221,7 +272,7 @@ class _TutorialPageState extends State<TutorialPage> {
   Future<void> _firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
     // showNotification(message);
-    _TutorialPageState().showNotification(message);
+    // _TutorialPageState().showNotification(message, message);
 
     /// return await _TutorialPageState().showNotification(message);
   }
@@ -380,8 +431,12 @@ class _TutorialPageState extends State<TutorialPage> {
               'priority': 'high',
               'data': <String, dynamic>{
                 'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-                'id': '1',
-                'status': 'done'
+                "magnitude" :  widget.dataGempa[0][0].toString(),
+                "date":widget.dataGempa[0][1].toString(),
+                "time" : widget.dataGempa[0][2].toString(),
+                "region" : widget.dataGempa[0][3].toString(),
+                "distance" :widget.dataGempa[0][4].toString(),
+                "potency": widget.dataGempa[0][5].toString()
               },
               'to': token,
             },
