@@ -210,7 +210,7 @@ class _TutorialPageState extends State<TutorialPage> {
     flutterTts.stop();
     //flutterTts.speak(payload.toString());
     flutterTts.speak(payload);
-    flutterLocalNotificationsPlugin.cancel(0);
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
