@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart' as pathProvider;
 final FlutterTts flutterTts = FlutterTts();
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -18,6 +19,7 @@ void main() async {
 
   // you can just pass the function like this
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await FirebaseMessaging.instance.subscribeToTopic('TopicToListen');
 
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
