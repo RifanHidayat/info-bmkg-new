@@ -19,6 +19,9 @@ version: 1.0.0+1
 
 environment:
   sdk: ">=2.10.0 <3.0.0"
+module:
+  androidX: true
+
 
 dependencies:
   platform: ^3.1.0
@@ -28,6 +31,7 @@ dependencies:
   build_runner: ^1.10.11
   cupertino_icons: ^1.0.0
   custom_radio_grouped_button: ^1.0.6+1
+  localstorage: ^4.0.0+1
 #  //flutter_statusbar_manager:
   flutter_tts: ^2.0.0
   geocoding: ^2.0.0
@@ -45,9 +49,14 @@ dependencies:
   firebase_core:
   flutter_local_notifications: ^9.3.2
   connectivity_plus: ^2.2.1
-  workmanager: ^0.4.1
+
   firebase_analytics: ^9.1.2
   change_app_package_name: ^1.0.0
+  flutter_background_service: ^0.2.6
+  device_info_plus:
+
+  shared_preferences: ^2.0.11
+  shared_preferences_android: 2.0.11
 
   get: ^4.6.1
 

@@ -10,7 +10,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/instance_manager.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart';
-import 'package:workmanager/workmanager.dart';
+
 import 'package:xml2json/xml2json.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:async'; // Contains HTML parsers to generate a Document object
@@ -35,51 +35,11 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     startSplashScreen();
-    Workmanager().initialize(
 
-      // The top level function, aka callbackDispatcher
-        callbackDispatcher,
 
-        // If enabled it will post a notification whenever
-        // the task is running. Handy for debugging tasks
-        isInDebugMode: true
-    );
-
-    Workmanager().registerPeriodicTask(
-      "2",
-
-      //This is the value that will be
-      // returned in the callbackDispatcher
-      "simplePeriodicTask",
-
-      // When no frequency is provided
-      // the default 15 minutes is set.
-      // Minimum frequency is 15 min.
-      // Android will automatically change
-      // your frequency to 15 min
-      // if you have configured a lower frequency.
-      frequency: Duration(minutes: 15),
-    );
 
   }
-  void callbackDispatcher() {
-    Workmanager().executeTask((task, inputData) {
 
-      // initialise the plugin of flutterlocalnotifications.
-      FlutterLocalNotificationsPlugin flip = new FlutterLocalNotificationsPlugin();
-
-      // app_icon needs to be a added as a drawable
-      // resource to the Android head project.
-      var android = new AndroidInitializationSettings('@mipmap/ic_launcher');
-      var IOS = new IOSInitializationSettings();
-
-      // initialise settings for both Android and iOS device.
-      var settings = new InitializationSettings(android: android, iOS: IOS);
-      flip.initialize(settings);
-      _showNotificationWithDefaultSound(flip);
-      return Future.value(true);
-    });
-  }
   Future _showNotificationWithDefaultSound(flip) async {
 
     // Show a notification after every 15 minute with the first
@@ -412,6 +372,7 @@ class _SplashScreenState extends State<SplashScreen> {
         var indexKoma = koordinat.indexOf(',');
         var latGempa = double.parse(koordinat.substring(0, indexKoma));
         var longGempa = double.parse(koordinat.substring(indexKoma + 1));
+
         double distanceInMeters = Geolocator.distanceBetween(
             position.latitude, position.longitude, latGempa, longGempa);
         jarakGempa = (distanceInMeters / 1000).round();

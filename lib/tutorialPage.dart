@@ -13,7 +13,7 @@ import 'package:get/get.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:vibration/vibration.dart';
 import 'package:http/http.dart' as http;
-import 'package:workmanager/workmanager.dart';
+
 
 class TutorialPage extends StatefulWidget {
   final List dataGempa;
@@ -210,20 +210,11 @@ class _TutorialPageState extends State<TutorialPage> {
       print("token ${value}");
     });
     WidgetsFlutterBinding.ensureInitialized();
-    Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
-    Workmanager().registerPeriodicTask("2", "simplePeriodicTask",
-        frequency: Duration(minutes: 15));
+
 
     setupInteractedMessage();
   }
 
-  void callbackDispatcher() {
-    Workmanager().executeTask((task, inputData) {
-      sendData(token);
-
-      return Future.value(true);
-    });
-  }
 
   Future showNotification(info, distance, magnitude, message) async {
     if ((double.parse(magnitude.toString()) > 3 &&
