@@ -48,12 +48,10 @@ void main() async {
   //   DeviceOrientation.portraitUp,
   //   DeviceOrientation.portraitDown,
   // ]);
-  //
   // var appDocumentDirectory =
   // await pathProvider.getApplicationDocumentsDirectory();
   //
   // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
   // SharedPreferences.setMockInitialValues({});
   runApp(MyApp());
 }
@@ -152,6 +150,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       ' KM dari anda, ' +
       message.data['potency'] +
       '';
+
   if ((double.parse(magnitude.toString()) > 3 &&
           int.parse(distance.toString()) <= 150) ||
       (double.parse(magnitude.toString()) > 5 &&
@@ -172,8 +171,6 @@ Future showNotification(info, distance, magnitude, title) async {
           int.parse(distance.toString()) <= 250)) {
     flutterTts.speak(info);
   }
-
-
 
   flutterLocalNotificationsPlugin.show(
       0,
@@ -214,7 +211,6 @@ class _MyAppState extends State<MyApp> {
   void getDataPref() async {
     date = storage.getItem('date');
     time = storage.getItem('time');
-
     getData(date, time);
   }
 
@@ -262,10 +258,15 @@ class _MyAppState extends State<MyApp> {
       if ((date != bmkgDate.toString()) && (time != bmkgTime.toString())) {
         storage.setItem("date", bmkgDate.toString());
         storage.setItem('time', bmkgTime.toString());
-        showNotification(info, distanceInMeters.toInt(), bmkgMagnitude,
-            "Info Gempa Dan ${bmkgPotency}");
-      } else {
-        print("${distanceInMeters}");
+        if (bmkgMagnitude > 5) {
+          showNotification(info, distanceInMeters.toInt(), bmkgMagnitude,
+              "Info Gempa Dan ${bmkgPotency}");
+
+        } else if ((bmkgMagnitude >= 3) && distanceInMeters <= 150) {
+
+          showNotification(info, distanceInMeters.toInt(), bmkgMagnitude,
+              "Info Gempa Dan ${bmkgPotency}");
+        }
       }
     } catch (e) {
       //print("error ${e}");

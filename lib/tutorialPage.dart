@@ -232,7 +232,7 @@ class _TutorialPageState extends State<TutorialPage> {
 
     flutterLocalNotificationsPlugin.show(
         0,
-        notification.title,
+       "Info gempa Dan ${message.data['potency']}",
         info,
         NotificationDetails(
           android: AndroidNotificationDetails("0", "gempa",
