@@ -8,18 +8,13 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:b_lind/splash_screen.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:get/get.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:path_provider/path_provider.dart' as pathProvider;
-
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xml2json/xml2json.dart';
 
 final FlutterTts flutterTts = FlutterTts();
@@ -114,22 +109,22 @@ void onStart() {
     _MyAppState().getDataPref();
 
     // test using external plugin
-    final deviceInfo = DeviceInfoPlugin();
-    String device;
-    if (Platform.isAndroid) {
-      final androidInfo = await deviceInfo.androidInfo;
-      device = androidInfo.model;
-    }
+    // final deviceInfo = DeviceInfoPlugin();
+    // String device;
+    // if (Platform.isAndroid) {
+    //   final androidInfo = await deviceInfo.androidInfo;
+    //   device = androidInfo.model;
+    // }
+    //
+    // if (Platform.isIOS) {
+    //   final iosInfo = await deviceInfo.iosInfo;
+    //   device = iosInfo.model;
+    // }
 
-    if (Platform.isIOS) {
-      final iosInfo = await deviceInfo.iosInfo;
-      device = iosInfo.model;
-    }
-
-    service.sendData({
-      "current_date": DateTime.now().toIso8601String(),
-      "device": device,
-    });
+    // service.sendData({
+    //   "current_date": DateTime.now().toIso8601String(),
+    //   "device": device,
+    // });
   });
 }
 
@@ -227,9 +222,6 @@ class _MyAppState extends State<MyApp> {
       var jsondata = xml2json.toGData();
       var data = json.decode(jsondata);
 
-      print(
-          "Tanggal ${data['Infogempa']['gempa']['point']['coordinates'][r'$t']}");
-      print("jam ${data['Infogempa']}");
       var bmkgDate = data['Infogempa']['gempa']['Tanggal'][r'$t'];
       var bmkgTime = data['Infogempa']['gempa']['Jam'][r'$t'];
       var bmkgReligion = data['Infogempa']['gempa']['Wilayah'][r'$t'];
@@ -258,18 +250,18 @@ class _MyAppState extends State<MyApp> {
       if ((date != bmkgDate.toString()) && (time != bmkgTime.toString())) {
         storage.setItem("date", bmkgDate.toString());
         storage.setItem('time', bmkgTime.toString());
-        if (bmkgMagnitude > 5) {
-          showNotification(info, distanceInMeters.toInt(), bmkgMagnitude,
+        var jarakGempa = (distanceInMeters / 1000).round();
+        print("data ${data['Infogempa']}");
+        if (double.parse(bmkgMagnitude) > 5.0) {
+          showNotification(info, jarakGempa.toInt(), bmkgMagnitude,
               "Info Gempa Dan ${bmkgPotency}");
-
-        } else if ((bmkgMagnitude >= 3) && distanceInMeters <= 150) {
-
-          showNotification(info, distanceInMeters.toInt(), bmkgMagnitude,
+        } else if ((double.parse(bmkgMagnitude) >= 3.0) && (jarakGempa) < 150) {
+          showNotification(info, jarakGempa.toInt(), bmkgMagnitude,
               "Info Gempa Dan ${bmkgPotency}");
         }
       }
     } catch (e) {
-      //print("error ${e}");
+      print("error ${e}");
     }
   }
 }
