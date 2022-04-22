@@ -176,7 +176,11 @@ Future showNotification(info, distance, magnitude, title) async {
             playSound: true,
             priority: Priority.high,
             importance: Importance.high,
-            icon: '@mipmap/ic_launcher'
+            icon: '@mipmap/ic_launcher',
+
+          ongoing: true,
+
+          styleInformation: BigTextStyleInformation(''),
 
             // TODO add a proper drawable resource to android, for now using
             //      one that already exists in example app.
@@ -221,6 +225,7 @@ class _MyAppState extends State<MyApp> {
       xml2json.parse(response.body);
       var jsondata = xml2json.toGData();
       var data = json.decode(jsondata);
+      print(data);
 
       var bmkgDate = data['Infogempa']['gempa']['Tanggal'][r'$t'];
       var bmkgTime = data['Infogempa']['gempa']['Jam'][r'$t'];
@@ -234,6 +239,8 @@ class _MyAppState extends State<MyApp> {
       var longGempa = double.parse(koordinat.substring(indexKoma + 1));
       double distanceInMeters = Geolocator.distanceBetween(
           position.latitude, position.longitude, latGempa, longGempa);
+      var jarakGempa = (distanceInMeters / 1000).round();
+      print(jarakGempa);
       var info = 'gempa berkekuatan ' +
           bmkgMagnitude +
           ' Magnitudo, pada ' +
@@ -243,15 +250,16 @@ class _MyAppState extends State<MyApp> {
           ' di  ' +
           bmkgReligion +
           ', ' +
-          distanceInMeters.toString() +
+         jarakGempa.toString() +
           ' KM dari anda, ' +
           bmkgPotency +
           '';
+
       if ((date != bmkgDate.toString()) && (time != bmkgTime.toString())) {
         storage.setItem("date", bmkgDate.toString());
         storage.setItem('time', bmkgTime.toString());
         var jarakGempa = (distanceInMeters / 1000).round();
-        print("data ${data['Infogempa']}");
+
         if (double.parse(bmkgMagnitude) > 5.0) {
           showNotification(info, jarakGempa.toInt(), bmkgMagnitude,
               "Info Gempa Dan ${bmkgPotency}");
